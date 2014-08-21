@@ -6,18 +6,20 @@
  * 			http://www.peachpit.com/articles/article.aspx?p=1967015
  * 			https://ellislab.com/codeigniter/user-guide/libraries/file_uploading.html
  */
-class Upload extends CI_Controller 
-{
+class Upload extends CI_Controller {
+
     public function __construct()
     {
         parent::__construct();
         $this->load->model('files_model');
         $this->load->database();
         $this->load->helper('url');
+    	log_message('info', 'at the upload constructor');
     }
  
     public function index()
     {
+    	log_message('info', 'at the index page function');
         $this->load->view('upload');
     }
 
@@ -25,18 +27,12 @@ class Upload extends CI_Controller
 	{
 	    $status = "";
 	    $msg = "";
-	    $file_element_name = 'userfile';
-	     
-	    if (empty($_POST['title']))
-	    {
-	        $status = "error";
-	        $msg = "Please enter a title";
-	    }
-	     
+	    $file_element_name = 'file';
+	     	     
 	    if ($status != "error")
 	    {
 	        $config['upload_path'] = './files/';
-	        $config['allowed_types'] = 'gif|jpg|png|doc|txt';
+	        $config['allowed_types'] = 'gif|jpg|png|doc|txt|pdf';
 	        $config['max_size'] = 1024 * 8;
 	        $config['encrypt_name'] = TRUE;
 	 
@@ -46,11 +42,15 @@ class Upload extends CI_Controller
 	        {
 	            $status = 'error';
 	            $msg = $this->upload->display_errors('', '');
+	        	log_message('info', 'uploaded errored:' . $msg);
 	        }
 	        else
 	        {
-	            $data = $this->upload->data();
-	            $file_id = $this->files_model->insert_file($data['file_name'], $_POST['title']);
+	        	
+//	            $data = $this->upload->data();
+	            
+	            $file_id = $this->files_model->insert_file('', '');
+	        	log_message('info', 'file_id:' . $file_id);
 	            if($file_id)
 	            {
 	                $status = "success";
@@ -89,16 +89,6 @@ class Upload extends CI_Controller
 	    echo json_encode(array('status' => $status, 'msg' => $msg));
 	}
 	
-	public function delete_file($file_id)
-	{
-	    $file = $this->get_file($file_id);
-	    if (!$this->db->where('id', $file_id)->delete('files'))
-	    {
-	        return FALSE;
-	    }
-	    unlink('./files/' . $file->filename);    
-	    return TRUE;
-	}
 	 
 	public function get_file($file_id)
 	{
@@ -108,7 +98,5 @@ class Upload extends CI_Controller
 	            ->get()
 	            ->row();
 	}
-	
-	
 	
 }
