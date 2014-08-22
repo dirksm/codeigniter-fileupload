@@ -6,7 +6,7 @@
 ## Description
 ###Uploading files using Codeigniter
 
-This project shows how to upload files to a server in php using the CodeIgniter framework.  Sebastian Tschan's jQuery-File-Upload script is used for the front end.  The back end processing is being handled by php in the CodeIgniter framework.  The files are stored in a mysql database.  I've included the script to create the table as well.
+This project shows how to upload files to a server in php using the CodeIgniter framework.  Sebastian Tschan's [jQuery-File-Upload](https://github.com/blueimp/jQuery-File-Upload) script is used for the front end.  The back end processing is being handled by php in the CodeIgniter framework.  The files are stored in a mysql database.  I've included the script to create the table as well.
 
 ##Methodology
 
