@@ -4,11 +4,10 @@ CREATE TABLE files (
     name VARCHAR(60) NOT NULL,
     file LONGBLOB NOT NULL,
     file_type VARCHAR(60) NOT NULL,
-    file_size DECIMAL(10,2) NOT NULL,
+    file_size INT(20) NOT NULL,
 	crc varchar(128) NOT NULL,
-	created datetime DEFAULT NULL,
-    PRIMARY KEY (`id`)
-)
+	created datetime DEFAULT NULL
+);
 
 DROP TRIGGER IF EXISTS `FILES_CREATE_TIMESTAMP`;
 DELIMITER //
