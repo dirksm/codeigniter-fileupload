@@ -20,7 +20,7 @@ The requirements are built into the application.  Look at upload.php to see the 
 Released under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 ## Donations
-This is free software, but you can donate to support the developer, Michael:
+This is free software, but you can donate to support the developer, Michael Dirks:
 
 Flattr: [![Flattr](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=dirksm&url=https%3A%2F%2Fgithub.com%2Fdirksm%2Fcodeigniter-fileupload)
 
