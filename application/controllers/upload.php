@@ -14,13 +14,12 @@ class Upload extends CI_Controller {
         $this->load->model('files_model');
         $this->load->database();
         $this->load->helper('url');
-    	log_message('info', 'at the upload constructor');
     }
  
     public function index()
     {
-    	log_message('info', 'at the index page function');
-        $this->load->view('upload');
+    	$data['attachments'] = $this->files_model->getFileList();
+        $this->load->view('upload', $data);
     }
 
 	public function upload_file()
@@ -32,25 +31,21 @@ class Upload extends CI_Controller {
 	    if ($status != "error")
 	    {
 	        $config['upload_path'] = './files/';
-	        $config['allowed_types'] = 'gif|jpg|png|doc|txt|pdf';
+	        $config['allowed_types'] = 'gif|jpg|png|doc|txt|pdf|jpeg|xls|docx|xlsx';
 	        $config['max_size'] = 1024 * 8;
-	        $config['encrypt_name'] = TRUE;
+	        $config['encrypt_name'] = FALSE;
 	 
 	        $this->load->library('upload', $config);
 	 
 	        if (!$this->upload->do_upload($file_element_name))
 	        {
 	            $status = 'error';
-	            $msg = $this->upload->display_errors('', '');
-	        	log_message('info', 'uploaded errored:' . $msg);
+	            $msg = $this->upload->display_errors('<p>', '</p>');
 	        }
 	        else
 	        {
-	        	
-//	            $data = $this->upload->data();
-	            
-	            $file_id = $this->files_model->insert_file('', '');
-	        	log_message('info', 'file_id:' . $file_id);
+	            $data = $this->upload->data();
+	            $file_id = $this->files_model->insert_file($data['full_path'], $data['file_name'], $data['file_type'], $data['file_size']);
 	            if($file_id)
 	            {
 	                $status = "success";
@@ -58,23 +53,17 @@ class Upload extends CI_Controller {
 	            }
 	            else
 	            {
-	                unlink($data['full_path']);
 	                $status = "error";
 	                $msg = "Something went wrong when saving the file, please try again.";
 	            }
+	            $size = filesize($data['full_path'])/1000;
+	            unlink($data['full_path']);
 	        }
-	        @unlink($_FILES[$file_element_name]);
 	    }
-	    echo json_encode(array('status' => $status, 'msg' => $msg));
-	}
-
-	public function files()
-	{
-	    $files = $this->files_model->get_files();
-	    $this->load->view('files', array('files' => $files));
+	    echo json_encode(array('status'=>$status, 'msg'=>$msg, 'attachid' => $file_id, 'id' => '1', 'name' => $data['file_name'], 'type'=> $data['file_type'], 'size' => $size));
 	}
 	
-	public function delete_file($file_id)
+	public function deleteFile($file_id)
 	{
 	    if ($this->files_model->delete_file($file_id))
 	    {
@@ -84,19 +73,20 @@ class Upload extends CI_Controller {
 	    else
 	    {
 	        $status = 'error';
-	        $msg = 'Something went wrong when deleteing the file, please try again';
+	        $msg = 'Something went wrong when deleting the file, please try again';
 	    }
 	    echo json_encode(array('status' => $status, 'msg' => $msg));
 	}
 	
-	 
-	public function get_file($file_id)
-	{
-	    return $this->db->select()
-	            ->from('files')
-	            ->where('id', $file_id)
-	            ->get()
-	            ->row();
+	public function viewFile($fileId) {
+		$file = $this->files_model->get($fileId);
+		if ( $file != null ) {
+			header("Content-Type: ".$file->file_type);
+			header("Content-Length: ".$file->file_size);
+			header("Content-Disposition: attachment; filename=".$file->name);
+			echo $file->file;
+		}
 	}
+
 	
 }

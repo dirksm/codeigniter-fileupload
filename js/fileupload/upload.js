@@ -3,10 +3,10 @@ var allDeleteButtons = $([]).add();
 function getDownloadRow(id, attachid, size, name) 
 {
 	var deleteBtn = 'delete_'+attachid;
-	var retStr = '<tr id="file_'+attachid+'"><td class="file_preview"><a href="javascript:void(0);" onclick="location.href=\''+contextPath+'/violation/getAttachment.do?id='+attachid+'\'" title="View '+name+'"><img src="'+contextPath+'/images/preview.gif" border="0"/></a><\/td>';
-	retStr+= '<td class="filename"><a href="javascript:void(0);" onclick="location.href=\''+contextPath+'/violation/getAttachment.do?id='+attachid+'\'">' + name + '</a></td>';
-	retStr+= '<td class="filesize">'+size+'</td>';
-	retStr+= '<td class="file_delete"><button id="'+deleteBtn+'" class="ui-state-default ui-corner-all" title="Delete" onclick="if(confirm(\'This action will delete '+name+'.  Are you sure?\')){deleteAttachment(\''+attachid+'\')}"><i class="icon-trash"></i></button></td>';
+	var retStr = '<tr id="file_'+attachid+'"><td class="file_preview"><a href="javascript:void(0);" onclick="location.href=\''+contextPath+'upload/viewFile/'+attachid+'\'" title="View '+name+'"><img src="'+contextPath+'/images/preview.gif" border="0"/></a><\/td>';
+	retStr+= '<td class="filename"><a href="javascript:void(0);" onclick="location.href=\''+contextPath+'upload/viewFile/'+attachid+'\'">' + name + '</a></td>';
+	retStr+= '<td class="filesize">'+size+' KB</td>';
+	retStr+= '<td class="file_delete"><button id="'+deleteBtn+'" class="btn btn-default btn-xs" title="Delete" onclick="if(confirm(\'This action will delete '+name+'.  Are you sure?\')){deleteAttachment(\''+attachid+'\')}"><span class="glyphicon glyphicon-trash"></span></button></td>';
 	retStr+= '</tr>';
 	return retStr;
 }
@@ -22,7 +22,6 @@ function addAttachment(JQTable, id, attachid, size, name){
 		var idDeleteBtn = $('#delete_'+attachid);
 		idDeleteBtn.attr('title', 'Remove '+name);
 		allDeleteButtons.push(idDeleteBtn);
-//		alert('adding ' + idDeleteBtn.val() + ' to allDeleteButtons. Size: ' + allDeleteButtons.length);
 	}); 
 }
 function hideDeleteButtons()
@@ -36,9 +35,13 @@ function deleteAttachment(attachId)
 {
 	$.ajax({
 		  type: "POST",
-		  url: contextPath+"/violation/deleteAttachment.do",
-		  data: {id : attachId}
+		  url: contextPath+"upload/deleteFile/"+attachId,
+		  dataType: 'json'
 		}).done(function( result ) {
-			$('#file_'+attachId).remove();
+			if(result.status == 'success') {
+				$('#file_'+attachId).remove();
+			} else {
+				alert(result.msg);
+			}
 		});
 }
