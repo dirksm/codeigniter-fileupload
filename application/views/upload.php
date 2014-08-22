@@ -57,6 +57,7 @@
 </head>
 <body>
     <h1>Upload File</h1>
+<div class="well well-lg">
 		<div id="idAttachmentList" style="display:none;" >
 		<fieldset>
 		<legend>
@@ -74,5 +75,6 @@
 				</form>
 		</div>
 		</fieldset>
+</div>
 </body>
 </html>

@@ -1,1 +1,4 @@
 /.externalToolBuilders
+/deploy.xml
+/build.properties
+/build.xml

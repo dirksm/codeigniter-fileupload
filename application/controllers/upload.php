@@ -40,7 +40,7 @@ class Upload extends CI_Controller {
 	        if (!$this->upload->do_upload($file_element_name))
 	        {
 	            $status = 'error';
-	            $msg = $this->upload->display_errors('<p>', '</p>');
+	            $msg = $this->upload->display_errors('', '');
 	        }
 	        else
 	        {
@@ -86,6 +86,10 @@ class Upload extends CI_Controller {
 			header("Content-Disposition: attachment; filename=".$file->name);
 			echo $file->file;
 		}
+	}
+	
+	public function clearFiles() {
+		$this->db->query('TRUNCATE TABLE  `files`');
 	}
 
 	
